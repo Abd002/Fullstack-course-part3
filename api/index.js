@@ -1,6 +1,6 @@
 const express = require('express')
 var morgan = require('morgan')
-require("dotenv").config()
+require('dotenv').config()
 
 const Persone = require('../models/persone')
 
@@ -9,43 +9,43 @@ const app = express()
 app.use(express.static('dist')) // IMPORTANT: This uses middleware to show static content (HTML & JS in dist)
 app.use(express.json())
 
-morgan.token('body', (req) => JSON.stringify(req.body));
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+morgan.token('body', (req) => JSON.stringify(req.body))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 const cors = require('cors')
 app.use(cors())
 
-const infoDisplay=()=>{
-    return `<h3>Phonebook has info for ${data.length}</h3>\
-    <h3>${Date()}</h3>`
+const infoDisplay=() => {
+  return '<h3>Phonebook has info for </h3>'
 }
 
 
-app.get('/', (request, response, next)=>{
-    response.send('<h1>Hello, world</h1>')
+app.get('/', (request, response) => {
+  response.send('<h1>Hello, world</h1>')
 })
-app.get('/api/persons', (request, response)=>{
+app.get('/api/persons', (request, response, next) => {
   Persone.find({}).then(result => {
     response.json(result)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
-app.get('/info', (request, response, next)=>{
-    response.send(infoDisplay())
+app.get('/info', (request, response) => {
+  response.send(infoDisplay())
 })
-app.get('/api/persons/:id', (request, response, next)=>{
-    const id = request.params.id
-    Persone.findById(id).then(result => {
-      response.json(result)
-    })
+app.get('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id
+  Persone.findById(id).then(result => {
+    response.json(result)
+  })
     .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-    const id = request.params.id
-    Persone.findByIdAndDelete(id)
-    .then(result=>{
+  const id = request.params.id
+  Persone.findByIdAndDelete(id)
+    .then(result => {
       response.status(204).end()
+      return result
     })
     .catch(error => next(error))
 })
@@ -69,10 +69,10 @@ app.post('/api/persons', (request, response, next) => {
       }).catch(error => next(error))
     }
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
-app.put('/api/persons/:id',(request, response, next)=>{
+app.put('/api/persons/:id',(request, response, next) => {
   const id = request.params.id
   const body = request.body
 
@@ -92,10 +92,9 @@ app.put('/api/persons/:id',(request, response, next)=>{
 })
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' });
-};
-  
-app.use(unknownEndpoint); // Should be added after all other routes
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint) // Should be added after all other routes
 
 
 const errorHandler = (error, request, response, next) => {
